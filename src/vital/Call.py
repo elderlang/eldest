@@ -1,0 +1,23 @@
+import eons
+from .._eval import _eval
+from .._exec import _exec
+
+class Call (eons.Functor):
+	def __init__(this, name="Call"):
+		super().__init__(name)
+
+		this.arg.kw.optional['name'] = None
+		this.arg.kw.optional['source'] = None
+
+		this.arg.kw.required.append('target')
+
+		this.arg.mapping.append('name')
+		this.arg.mapping.append('target')
+
+	def Function(this):
+		if (this.source is not None):
+			return this.source(_eval(this.target))
+		elif (this.name is not None):
+			return _eval(this.name)(_eval(this.target))
+		
+		raise RuntimeError(f"Neither source nor name was provided to {this.name}")
